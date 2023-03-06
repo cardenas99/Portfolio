@@ -1,0 +1,38 @@
+-- I Joined several tables from the Bikestores dataset to gather relevant data for this project.
+-- I created new columns generated from the existing data such as total_units and revenue to use for this project.
+
+SELECT
+    ord.order_id,
+    CONCAT (cus.first_name, ' ', cus.last_name) AS customer,
+    cus.city,
+    cus.state,
+    ord.order_date,
+    SUM(item.quantity) AS 'total_units',
+    SUM (item.quantity * item.list_price) AS 'revenue',
+    pro.product_name,
+    cat.category_name,
+    sto.store_name,
+    CONCAT(sta.first_name, ' ', sta.last_name) AS employee
+FROM Bikestores.sales.orders ord
+    JOIN Bikestores.sales.customers cus
+    ON ord.customer_id = cus.customer_id
+    JOIN Bikestores.sales.order_items item
+    ON ord.order_id=item.order_id
+    JOIN Bikestores.production.products pro
+    ON item.product_id=pro.product_id
+    JOIN Bikestores.production.categories cat
+    ON pro.category_id=cat.category_id
+    JOIN Bikestores.sales.stores sto
+    ON ord.store_id=sto.store_id
+    JOIN Bikestores.sales.staffs sta
+    ON ord.staff_id=sta.staff_id
+GROUP BY 
+ord.order_id, 
+CONCAT (cus.first_name, ' ', cus.last_name), 
+cus.city, 
+cus.state, 
+ord.order_date,
+pro.product_name,
+cat.category_name,
+sto.store_name,
+CONCAT(sta.first_name, ' ', sta.last_name)
